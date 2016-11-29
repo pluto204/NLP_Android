@@ -7,15 +7,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hai.nlp_project.ActivityRead">
+    tools:context="com.hai.nlp_project.ActivityRead"
+    android:background="#727272">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:fillViewport="false">
+        android:fillViewport="false"
+        android:layout_above="@+id/scrollView"
+        android:layout_alignParentEnd="true"
+        android:background="#ffffff">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -24,6 +25,27 @@
                 android:layout_height="wrap_content"
                 android:text="demo"
                 android:id="@+id/content"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:fillViewport="false"
+        android:id="@+id/scrollView"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="error"
+                android:id="@+id/error"/>
         </LinearLayout>
     </ScrollView>
 
@@ -44,7 +66,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="PR0CESS"/>
+            android:text="PR0CESS"
+            android:id="@+id/processBtn"/>
     </LinearLayout>
 
 </RelativeLayout>
