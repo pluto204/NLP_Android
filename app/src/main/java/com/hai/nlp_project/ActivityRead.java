@@ -43,7 +43,7 @@ public class ActivityRead extends AppCompatActivity {
         errorTextView= (TextView)findViewById(R.id.error);
         fileContent = readAll();
         textView.setText(fileContent);
-        
+
         String content = readFromFile(getApplicationContext(), "VNsyl.txt");
         st = new SyllableTree(content);
 
