@@ -16,18 +16,26 @@ import com.tom_roush.pdfbox.text.PDFTextStripperByArea;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.io.InputStream;
+=======
+>>>>>>> refs/remotes/origin/NLP
 import java.util.Scanner;
 
 public class ActivityRead extends AppCompatActivity {
 
     TextView textView,errorTextView;
     static String fileName;
+<<<<<<< HEAD
     SyllableTree st;
 
     static final String ALPHABET = "!?(),.";
     String fileContent;
     int errorCount = 0;
+=======
+    static final String ALPHABET = "!?(),.";
+    static Scanner sc;
+>>>>>>> refs/remotes/origin/NLP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class ActivityRead extends AppCompatActivity {
         fileName = root.getPath() + "/Download/" + message + ".pdf";
         Toast.makeText(ActivityRead.this, message, Toast.LENGTH_SHORT).show();
         textView= (TextView)findViewById(R.id.content);
+<<<<<<< HEAD
         errorTextView= (TextView)findViewById(R.id.error);
         fileContent = readAll();
         textView.setText(fileContent);
@@ -66,6 +75,11 @@ public class ActivityRead extends AppCompatActivity {
                 errorTextView.setText(result);
             }
         });
+=======
+        String s = readAll();
+        sc = new Scanner(s);
+        textView.setText(s);
+>>>>>>> refs/remotes/origin/NLP
     }
 
     //doc file pdf
@@ -88,6 +102,21 @@ public class ActivityRead extends AppCompatActivity {
         return content;
     }
 
+<<<<<<< HEAD
+=======
+    //Hàm này sử dụng cho xử lý tìm lỗi sai, trả về numOfWord từ tiếp theo của các từ đã đọc.
+    public static String[] readPart(int numOfWord) {
+        String[] result = new String[numOfWord];
+        for (int i = 0; i < numOfWord; i++) {
+            if(sc.hasNext()){
+                result[i] = repairWord(sc.next());
+            }
+        }
+        sc.close();
+        return result;
+    }
+
+>>>>>>> refs/remotes/origin/NLP
     static String repairWord(String word){
         word = word.toLowerCase();
         int n = word.length();
@@ -110,6 +139,7 @@ public class ActivityRead extends AppCompatActivity {
         }
         return false;
     }
+<<<<<<< HEAD
 
     String readFromFile(Context context, String file) {
         try {
@@ -126,3 +156,6 @@ public class ActivityRead extends AppCompatActivity {
     }
 
 }
+=======
+}
+>>>>>>> refs/remotes/origin/NLP
