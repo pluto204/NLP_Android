@@ -81,15 +81,25 @@ public class ActivityRead extends AppCompatActivity {
                     public void run() {
                         result = "Từ sai: ";
                         File totalFile = new File("/mnt/sdcard/Download/" + message);
-                        Automata au = new Automata();
-                        au.loadAutomata();
+//                        Automata au = new Automata();
+//                        au.loadAutomata();
                         for(File f : totalFile.listFiles()){
                             String ss = readText(f);
-                            NGramModel ngm  =new NGramModel(f.getPath());
-                            ArrayList<String> al = ngm.checkSentence(ss, au);
-                            for(String s : al){
-                                result += s + " ";
+//                            NGramModel ngm  =new NGramModel(f.getPath());
+                            Scanner sc = new Scanner(ss);
+                            while (sc.hasNext()){
+                                String s = sc.next();
+                                s = s.toLowerCase();
+                                s = repairWord(s);
+                                if(!st.search(s)){
+                                    result += s + " ";
+                                    errorCount++;
+                                }
                             }
+//                            ArrayList<String> al = ngm.checkSentence(ss, au);
+//                            for(String s : al){
+//                                result += s + " ";
+//                            }
                             errorTextView.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -98,6 +108,8 @@ public class ActivityRead extends AppCompatActivity {
                                 }
                             });
                         }
+//                        result += " Tổng số lỗi: " + errorCount;
+
                     }
                 }).start();
 
