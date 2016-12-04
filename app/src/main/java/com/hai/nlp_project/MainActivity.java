@@ -29,11 +29,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> nameList = new ArrayList<>();
         for(File f : file.listFiles()){
             String s = f.getPath();
-            int l = s.length();
-
-            if(s.substring(l-4, l).equals(".pdf")) {
-                nameList.add(s.substring(file.getPath().length()+1, f.getPath().length()-4));
-            }
+            nameList.add(s.substring(file.getPath().length()+1, f.getPath().length()));
         }
 
         int size = nameList.size();

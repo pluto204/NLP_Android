@@ -18,9 +18,14 @@ import android.widget.Toast;
 import com.tom_roush.pdfbox.pdmodel.PDDocument;
 import com.tom_roush.pdfbox.text.PDFTextStripper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ActivityRead extends AppCompatActivity {
@@ -33,12 +38,14 @@ public class ActivityRead extends AppCompatActivity {
     String string_text;
     String fileContent;
     int errorCount = 0; //tong so loi
-    static final String ALPHABET = "123456789:-+*&%=@`~^$!?(),.\"\\/<>{}[]|;";
+    static final String ALPHABET = "123456789:-+*&%=@`~^$!?(),.“”\"\\/<>{}[]|;";
     ProgressBar spinner;
     Button processBtn, speechBtn, nextBtn, prevBtn;
-    static PDDocument document = null;
-    int totalPage, currentPage;
+//    static PDDocument document = null;
+    int currentPage;
     String result = "";
+    String message;
+    String s;
     //endregion
 
     @Override
@@ -47,10 +54,8 @@ public class ActivityRead extends AppCompatActivity {
         setContentView(R.layout.activity_activity_read);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra("filename");
-        File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
-        fileName = root.getPath() + "/Download/" + message + ".pdf";
-        Toast.makeText(ActivityRead.this, message, Toast.LENGTH_SHORT).show();
+        message = intent.getStringExtra("filename");
+
         textView= (TextView)findViewById(R.id.content);
         errorTextView= (TextView)findViewById(R.id.error);
         spinner = (ProgressBar)findViewById(R.id.progressBar);
@@ -62,60 +67,7 @@ public class ActivityRead extends AppCompatActivity {
 
         processBtn = (Button)findViewById(R.id.processBtn);
         speechBtn = (Button)findViewById(R.id.speechBtn);
-        nextBtn = (Button)findViewById(R.id.nextPage);
-        prevBtn = (Button)findViewById(R.id.prevPage);
         currentPage = 1;
-
-        //region [next and back button]
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentPage < totalPage){
-                    spinner.setVisibility(View.VISIBLE);
-                    currentPage++;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final String s = readPage(currentPage);
-                            textView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    spinner.setVisibility(View.GONE);
-                                    fileContent = s;
-                                    fileContent = fileContent.replaceAll("\n", " ");
-                                    textView.setText(fileContent);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }
-        });
-
-        prevBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentPage > 1){
-                    spinner.setVisibility(View.VISIBLE);
-                    currentPage--;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final String s = readPage(currentPage);
-                            textView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    spinner.setVisibility(View.GONE);
-                                    fileContent = s;
-                                    fileContent = fileContent.replaceAll("\n", " ");
-                                    textView.setText(fileContent);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            }
-        });
 
         //endregion
 
@@ -127,30 +79,25 @@ public class ActivityRead extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        final String result = "Từ sai: ";
-                        for(int i = 1; i<=totalPage; i++){
-
-                            String ss = readPage(i);
-                            Scanner sc = new Scanner(ss);
-                            while (sc.hasNext()){
-                                String s = sc.next();
-                                s = s.toLowerCase();
-                                s = repairWord(s);
-                                if(!st.search(s)){
-                                    result += s + " ";
-                                    errorCount++;
+                        result = "Từ sai: ";
+                        File totalFile = new File("/mnt/sdcard/Download/" + message);
+                        Automata au = new Automata();
+                        au.loadAutomata();
+                        for(File f : totalFile.listFiles()){
+                            String ss = readText(f);
+                            NGramModel ngm  =new NGramModel(f.getPath());
+                            ArrayList<String> al = ngm.checkSentence(ss, au);
+                            for(String s : al){
+                                result += s + " ";
+                            }
+                            errorTextView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    spinner.setVisibility(View.GONE);
+                                    errorTextView.setText(result);
                                 }
-                            }
-
+                            });
                         }
-                        result += " Tổng số lỗi: " + errorCount;
-                        errorTextView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                spinner.setVisibility(View.GONE);
-                                errorTextView.setText(result);
-                            }
-                        });
                     }
                 }).start();
 
@@ -173,18 +120,19 @@ public class ActivityRead extends AppCompatActivity {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                init();
-                final String s = readPage(1);
-                totalPage = document.getNumberOfPages();
+                File totalFile = new File("/mnt/sdcard/Download/" + message);
+                for(File f : totalFile.listFiles()){
+                    if(f.getName().endsWith(".txt")){
+                        s = readText(f);
+                    }
+                }
                 textView.post(new Runnable() {
                     @Override
                     public void run() {
                         spinner.setVisibility(View.GONE);
                         processBtn.setActivated(true);
                         speechBtn.setActivated(true);
-                        fileContent = s;
-                        fileContent = fileContent.replaceAll("\n", " ");
-                        textView.setText(fileContent);
+                        textView.setText(s);
                     }
                 });
             }
@@ -193,31 +141,21 @@ public class ActivityRead extends AppCompatActivity {
         //endregion
     }
 
-    static void init(){
+    public static String readText(File file){
+        StringBuilder text = new StringBuilder();
         try {
-            document = PDDocument.load(new File(fileName));
-            document.getClass();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
 
-    //region [doc file pdf]
-    public static String readPage(int pageNo) {
-        String content = "";
-        try {
-//            init();
-            if (!document.isEncrypted()) {
-                PDFTextStripper stripper = new PDFTextStripper();
-                stripper.setStartPage(pageNo);
-                stripper.setEndPage(pageNo);
-                content = stripper.getText(document);
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
             }
-//            document.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            br.close();
         }
-        return content;
+        catch (IOException e) {
+        }
+        return new String(text);
     }
 
     static String repairWord(String word){
@@ -236,10 +174,13 @@ public class ActivityRead extends AppCompatActivity {
     }
 
     static boolean checkChar(char c){
-        int n = ALPHABET.length();
-        for(int i= 0; i<n; i++){
-            if(c == ALPHABET.charAt(i)) return true;
+        int n = ALPHABET.length(), i;
+        for(i= 0; i<n; i++){
+            if(c == ALPHABET.charAt(i)){
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -256,8 +197,6 @@ public class ActivityRead extends AppCompatActivity {
             return "" ;
         }
     }
-
-    //endregion
 
     //region [speech to text and highlight function]
     public void startSpeechtotext(){

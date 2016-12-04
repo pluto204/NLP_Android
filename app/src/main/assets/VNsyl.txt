@@ -1532,11 +1532,13 @@ hon
 hong
 hop
 hoà
+hòa
 hoài
 hoàn
 hoàng
 hoành
 hoá
+hóa
 hoác
 hoán
 hoánh
@@ -4885,6 +4887,7 @@ thủa
 thủi
 thủm
 thủng
+thủy
 thứ
 thức
 thừ
@@ -5179,6 +5182,8 @@ tum
 tun
 tung
 tuy
+tùy
+túy
 tuya
 tuyn
 tuyên

@@ -13,8 +13,9 @@
         android:fillViewport="false"
         android:background="#ffffff"
         android:id="@+id/scrollView2"
-        android:layout_above="@+id/nextPage"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/scrollView"
+        android:layout_marginBottom="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,24 +29,9 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/nextPage"
-        android:text="NEXT"
-        android:layout_above="@+id/scrollView"
-        android:layout_alignParentEnd="true" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/prevPage"
-        android:text="PREV"
-        android:layout_above="@+id/scrollView"
-        android:layout_alignParentStart="true" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="200dp"
         android:layout_above="@+id/linearLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
