@@ -81,11 +81,11 @@ public class ActivityRead extends AppCompatActivity {
                     public void run() {
                         result = "Từ sai: ";
                         File totalFile = new File("/mnt/sdcard/Download/" + message);
-//                        Automata au = new Automata();
-//                        au.loadAutomata();
+                        Automata au = new Automata();
+                        au.loadAutomata(getApplicationContext());
                         for(File f : totalFile.listFiles()){
                             String ss = readText(f);
-//                            NGramModel ngm  =new NGramModel(f.getPath());
+                            NGramModel ngm  =new NGramModel(f.getPath());
                             Scanner sc = new Scanner(ss);
                             while (sc.hasNext()){
                                 String s = sc.next();

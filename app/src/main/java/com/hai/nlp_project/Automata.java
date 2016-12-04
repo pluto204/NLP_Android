@@ -1,9 +1,12 @@
 package com.hai.nlp_project;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -127,10 +130,11 @@ public class Automata {
         }
     }
 
-    public boolean loadAutomata()
+    public boolean loadAutomata(Context context)
     {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("resources/vowelComb.txt"));
+//            BufferedReader br = new BufferedReader(new FileReader("resources/vowelComb.txt"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(context.getAssets().open("vowelComb.txt")));
             String line;
             automata.clear();
             int stateIndex = 0;
